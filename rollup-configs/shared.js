@@ -9,6 +9,7 @@ export default {
         })
     ],
     external: [
-        'isomorphic-fetch'
+        'isomorphic-fetch',
+        'isomorphic-form-data'
     ]
 }
