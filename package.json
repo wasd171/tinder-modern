@@ -8,6 +8,7 @@
   "author": "Konstantin Nesterov <wasd171@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.4.0",
     "isomorphic-fetch": "^2.2.1",
     "rimraf": "^2.6.1",
