@@ -1,0 +1,21 @@
+{
+  "name": "tinder-modern",
+  "version": "0.0.1",
+  "description": "Node.js bindings to Tinder API",
+  "main": "dist/bundle.js",
+  "module": "dist/bundle.es.js",
+  "repository": "https://github.com/wasd171/tinder-modern.git",
+  "author": "Konstantin Nesterov <wasd171@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-preset-env": "^1.4.0",
+    "isomorphic-fetch": "^2.2.1",
+    "rimraf": "^2.6.1",
+    "rollup": "^0.41.6",
+    "rollup-plugin-babel": "^2.7.1"
+  },
+  "scripts": {
+    "clean": "rimraf dist/",
+    "build": "npm run clean && rollup -c rollup-configs/cjs.js && rollup -c rollup-configs/es.js"
+  }
+}
