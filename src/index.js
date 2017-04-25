@@ -60,7 +60,7 @@ class TinderClient {
         return res
     }
 
-    setAuthToken(token) {
+    setAuthToken({token}) {
         this.xAuthToken = token;
     }
 
