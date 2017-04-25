@@ -53,13 +53,23 @@ class TinderClient {
             }
         });
 
-        console.log({res});
-
         this.xAuthToken = res.token;
         this.userId = res.user._id;
         this.defaults = res;
 
         return res
+    }
+
+    setAuthToken(token) {
+        this.xAuthToken = token;
+    }
+
+    getAuthToken() {
+        return this.xAuthToken;
+    }
+
+    getDefaults() {
+        return this.defaults;
     }
 }
 
