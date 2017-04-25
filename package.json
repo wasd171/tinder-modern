@@ -10,14 +10,24 @@
   "devDependencies": {
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.4.0",
+    "husky": "^0.13.3",
     "isomorphic-fetch": "^2.2.1",
     "isomorphic-form-data": "^1.0.0",
+    "lint-staged": "^3.4.0",
+    "prettier": "^1.2.2",
     "rimraf": "^2.6.1",
     "rollup": "^0.41.6",
     "rollup-plugin-babel": "^2.7.1"
   },
   "scripts": {
     "clean": "rimraf dist/",
-    "build": "npm run clean && rollup -c rollup-configs/cjs.js && rollup -c rollup-configs/es.js"
+    "build": "npm run clean && rollup -c rollup-configs/cjs.js && rollup -c rollup-configs/es.js",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "(src|rollup-configs)/**/*.js": [
+      "prettier --single-quote --use-tabs --tab-width=4 --no-semi --write",
+      "git add"
+    ]
   }
 }
