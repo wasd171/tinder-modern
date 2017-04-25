@@ -71,6 +71,42 @@ class TinderClient {
     getDefaults() {
         return this.defaults;
     }
+
+    getRecommendations({limit}) {
+        return this.http({
+            path: 'user/recs',
+            method: 'GET',
+            data: {
+                limit
+            }
+        })
+    }
+
+    sendMessage({matchId, message}) {
+        return this.http({
+            path: `user/matches/${matchId}`,
+            method: 'POST',
+            data: {
+                message
+            }
+        })
+    }
+
+    like({userId}) {
+        return this.http({
+            path: `like/${userId}`,
+            method: 'GET',
+            data: null
+        })
+    }
+
+    superLike({userId}) {
+        return this.http({
+            path: `like/${userId}/super`
+            method: 'GET',
+            data: null
+        })
+    }
 }
 
 export default TinderClient
