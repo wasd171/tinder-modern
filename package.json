@@ -38,6 +38,7 @@
     "(src|rollup-configs)/**/*.js": [
       "prettier --use-tabs --tab-width=4 --single-quote --no-semi --write",
       "eslint --fix",
+      "flow",
       "git add"
     ]
   },

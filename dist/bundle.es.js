@@ -32,10 +32,7 @@ class TinderClient {
 	}
 
 	get requestImageHeaders() {
-		const headers = this.requestHeaders.entries().reduce((headersObject, [key, value]) => {
-			headersObject[key] = value;
-		}, {});
-
+		const headers = this.requestHeaders;
 		headers.set('Content-Type', 'multipart/form-data');
 
 		return headers;
@@ -260,7 +257,13 @@ class TinderClient {
 		});
 	}
 
-	updatePreferences({ discovery, ageMin, ageMax, gender, distance }) {
+	updatePreferences({
+		discovery,
+		ageMin,
+		ageMax,
+		gender,
+		distance
+	}) {
 		return this.http({
 			path: 'profile',
 			method: 'POST',
@@ -297,6 +300,9 @@ class TinderClient {
 			const url = `${TINDER_IMAGE_HOST}image?client_photo_id=ProfilePhoto${new Date().getTime()}`;
 
 			const form = new FormData();
+			if (_this4.userId === null) {
+				throw new Error('Trying to upload picture without existing userId');
+			}
 			form.append('userId', _this4.userId);
 			form.append('file', file);
 
@@ -307,7 +313,7 @@ class TinderClient {
 			});
 
 			if (!res.ok) {
-				const body = res.text();
+				const body = yield res.text();
 				throw new Error(body);
 			} else {
 				return res.json();
