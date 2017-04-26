@@ -32,15 +32,15 @@
   "scripts": {
     "clean": "rimraf dist/",
     "build": "npm run clean && rollup -c rollup-configs/cjs.js && rollup -c rollup-configs/es.js",
-    "precommit": "lint-staged && npm run build && git add dist/*.js"
+    "precommit": "lint-staged && npm run build && git add dist/*.js",
+    "flow": "flow check-contents <"
   },
   "lint-staged": {
-    "(src|rollup-configs)/**/*.js": [
-      "prettier --use-tabs --tab-width=4 --single-quote --no-semi --write",
-      "eslint --fix",
-      "flow",
-      "git add"
-    ]
+    "{src,rollup-configs}/*.js": [
+        "eslint --fix",
+        "npm run flow",
+        "git add"
+      ]
   },
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
