@@ -1,8 +1,10 @@
+// @flow
 import 'isomorphic-fetch'
 import 'isomorphic-form-data'
 
 const TINDER_HOST = 'https://api.gotinder.com/'
 const TINDER_IMAGE_HOST = 'https://imageupload.gotinder.com/'
+
 
 class TinderClient {
 	xAuthToken = null

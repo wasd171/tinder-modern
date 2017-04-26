@@ -8,11 +8,19 @@
   "author": "Konstantin Nesterov <wasd171@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "babel-eslint": "^7.2.3",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.4.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-config-google": "^0.7.1",
+    "eslint-config-prettier": "^1.7.0",
+    "eslint-plugin-flowtype": "^2.32.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-prettier": "^2.0.1",
+    "eslint-plugin-react": "^6.10.3",
     "husky": "^0.13.3",
-    "isomorphic-fetch": "^2.2.1",
-    "isomorphic-form-data": "^1.0.0",
     "lint-staged": "^3.4.0",
     "prettier": "^1.2.2",
     "rimraf": "^2.6.1",
@@ -26,8 +34,12 @@
   },
   "lint-staged": {
     "(src|rollup-configs)/**/*.js": [
-      "prettier --single-quote --use-tabs --tab-width=4 --no-semi --write",
+      "prettier --use-tabs --tab-width=4 --single-quote --no-semi --write",
       "git add"
     ]
+  },
+  "dependencies": {
+    "isomorphic-fetch": "^2.2.1",
+    "isomorphic-form-data": "^1.0.0"
   }
 }
