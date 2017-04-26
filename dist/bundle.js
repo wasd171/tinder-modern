@@ -5,423 +5,424 @@ require('isomorphic-form-data');
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
+// @flow
 const TINDER_HOST = 'https://api.gotinder.com/';
-const TINDER_IMAGE_HOST = "https://imageupload.gotinder.com/";
+const TINDER_IMAGE_HOST = 'https://imageupload.gotinder.com/';
 
 class TinderClient {
-    constructor() {
-        this.xAuthToken = null;
-        this.lastActivity = new Date();
-        this.userId = null;
-        this.defaults = null;
-    }
+	constructor() {
+		this.xAuthToken = null;
+		this.lastActivity = new Date();
+		this.userId = null;
+		this.defaults = null;
+	}
 
-    get requestHeaders() {
-        const headers = {
-            'User-Agent': 'Tinder Android Version 4.5.5',
-            'os_version': '23',
-            'platform': 'android',
-            'app-version': '854',
-            'Accept-Language': 'en',
-            'Content-Type': 'application/json'
-        };
+	get requestHeaders() {
+		const headers = {
+			'User-Agent': 'Tinder Android Version 4.5.5',
+			os_version: '23',
+			platform: 'android',
+			'app-version': '854',
+			'Accept-Language': 'en',
+			'Content-Type': 'application/json'
+		};
 
-        if (this.xAuthToken !== null) {
-            headers['X-Auth-Token'] = this.xAuthToken;
-        }
+		if (this.xAuthToken !== null) {
+			headers['X-Auth-Token'] = this.xAuthToken;
+		}
 
-        return new Headers(headers);
-    }
+		return new Headers(headers);
+	}
 
-    get requestImageHeaders() {
-        const headers = this.requestHeaders.entries().reduce((headersObject, [key, value]) => {
-            headersObject[key] = value;
-        }, {});
+	get requestImageHeaders() {
+		const headers = this.requestHeaders.entries().reduce((headersObject, [key, value]) => {
+			headersObject[key] = value;
+		}, {});
 
-        headers.set('Content-Type', 'multipart/form-data');
+		headers.set('Content-Type', 'multipart/form-data');
 
-        return headers;
-    }
+		return headers;
+	}
 
-    http({ path, method, data }) {
-        var _this = this;
+	http({ path, method, data }) {
+		var _this = this;
 
-        return _asyncToGenerator(function* () {
-            const res = yield fetch(`${TINDER_HOST}${path}`, {
-                method,
-                headers: _this.requestHeaders,
-                body: JSON.stringify(data)
-            });
+		return _asyncToGenerator(function* () {
+			const res = yield fetch(`${TINDER_HOST}${path}`, {
+				method,
+				headers: _this.requestHeaders,
+				body: JSON.stringify(data)
+			});
 
-            if (!res.ok) {
-                const body = yield res.text();
-                throw new Error(body);
-            } else {
-                const body = yield res.json();
-                if (body.error !== undefined) {
-                    throw new Error(body.error);
-                } else {
-                    return body;
-                }
-            }
-        })();
-    }
+			if (!res.ok) {
+				const body = yield res.text();
+				throw new Error(body);
+			} else {
+				const body = yield res.json();
+				if (body.error !== undefined) {
+					throw new Error(body.error);
+				} else {
+					return body;
+				}
+			}
+		})();
+	}
 
-    httpImage({ path, method, data }) {
-        return _asyncToGenerator(function* () {})();
-    }
+	authorize({ fbToken, fbId }) {
+		var _this2 = this;
 
-    authorize({ fbToken, fbId }) {
-        var _this2 = this;
+		return _asyncToGenerator(function* () {
+			const res = yield _this2.http({
+				path: 'auth',
+				method: 'POST',
+				data: {
+					facebook_token: fbToken,
+					facebook_id: fbId,
+					locale: 'en'
+				}
+			});
 
-        return _asyncToGenerator(function* () {
-            const res = yield _this2.http({
-                path: 'auth',
-                method: 'POST',
-                data: {
-                    facebook_token: fbToken,
-                    facebook_id: fbId,
-                    locale: 'en'
-                }
-            });
+			_this2.xAuthToken = res.token;
+			_this2.userId = res.user._id;
+			_this2.defaults = res;
 
-            console.log(res);
+			return res;
+		})();
+	}
 
-            _this2.xAuthToken = res.token;
-            _this2.userId = res.user._id;
-            _this2.defaults = res;
+	setAuthToken({ token }) {
+		this.xAuthToken = token;
+	}
 
-            return res;
-        })();
-    }
+	getAuthToken() {
+		return this.xAuthToken;
+	}
 
-    setAuthToken({ token }) {
-        this.xAuthToken = token;
-    }
+	getDefaults() {
+		return this.defaults;
+	}
 
-    getAuthToken() {
-        return this.xAuthToken;
-    }
+	getRecommendations({ limit }) {
+		return this.http({
+			path: 'user/recs',
+			method: 'GET',
+			data: {
+				limit
+			}
+		});
+	}
 
-    getDefaults() {
-        return this.defaults;
-    }
+	sendMessage({ matchId, message }) {
+		return this.http({
+			path: `user/matches/${matchId}`,
+			method: 'POST',
+			data: {
+				message
+			}
+		});
+	}
 
-    getRecommendations({ limit }) {
-        return this.http({
-            path: 'user/recs',
-            method: 'GET',
-            data: {
-                limit
-            }
-        });
-    }
+	like({ userId }) {
+		return this.http({
+			path: `like/${userId}`,
+			method: 'GET',
+			data: null
+		});
+	}
 
-    sendMessage({ matchId, message }) {
-        return this.http({
-            path: `user/matches/${matchId}`,
-            method: 'POST',
-            data: {
-                message
-            }
-        });
-    }
+	superLike({ userId }) {
+		return this.http({
+			path: `like/${userId}/super`,
+			method: 'GET',
+			data: null
+		});
+	}
 
-    like({ userId }) {
-        return this.http({
-            path: `like/${userId}`,
-            method: 'GET',
-            data: null
-        });
-    }
+	pass({ userId }) {
+		return this.http({
+			path: `pass/${userId}`,
+			method: 'GET',
+			data: null
+		});
+	}
 
-    superLike({ userId }) {
-        return this.http({
-            path: `like/${userId}/super`,
-            method: 'GET',
-            data: null
-        });
-    }
+	unmatch({ matchId }) {
+		return this.http({
+			path: `user/matches/${matchId}`,
+			method: 'DELETE',
+			data: null
+		});
+	}
 
-    pass({ userId }) {
-        return this.http({
-            path: `pass/${userId}`,
-            method: 'GET',
-            data: null
-        });
-    }
+	getUpdates() {
+		var _this3 = this;
 
-    unmatch({ matchId }) {
-        return this.http({
-            path: `user/matches/${matchId}`,
-            method: 'DELETE',
-            data: null
-        });
-    }
+		return _asyncToGenerator(function* () {
+			const res = yield _this3.http({
+				path: 'updates',
+				method: 'POST',
+				data: {
+					last_activity_date: _this3.lastActivity.toISOString()
+				}
+			});
 
-    getUpdates() {
-        var _this3 = this;
+			if (res !== undefined && res.last_activity_date !== undefined) {
+				_this3.lastActivity = new Date(res.last_activity_date);
+			}
 
-        return _asyncToGenerator(function* () {
-            const res = yield _this3.http({
-                path: 'updates',
-                method: 'POST',
-                data: {
-                    last_activity_date: _this3.lastActivity.toISOString()
-                }
-            });
+			return res;
+		})();
+	}
 
-            if (res !== undefined && res.last_activity_date !== undefined) {
-                _this3.lastActivity = new Date(res.last_activity_date);
-            }
+	getHistory() {
+		return this.http({
+			path: 'updates',
+			method: 'POST',
+			data: {
+				last_activity_date: ''
+			}
+		});
+	}
 
-            return res;
-        })();
-    }
+	updatePosition({ lon, lat }) {
+		return this.http({
+			path: 'user/ping',
+			method: 'POST',
+			data: {
+				lon,
+				lat
+			}
+		});
+	}
 
-    getHistory() {
-        return this.http({
-            path: 'updates',
-            method: 'POST',
-            data: {
-                last_activity_date: ''
-            }
-        });
-    }
+	getAccount() {
+		return this.http({
+			path: 'meta',
+			method: 'GET',
+			data: null
+		});
+	}
 
-    updatePosition({ lon, lat }) {
-        return this.http({
-            path: 'user/ping',
-            method: 'POST',
-            data: {
-                lon,
-                lat
-            }
-        });
-    }
+	updateGender({ gender }) {
+		return this.http({
+			path: 'profile',
+			method: 'POST',
+			data: {
+				gender
+			}
+		});
+	}
 
-    getAccount() {
-        return this.http({
-            path: 'meta',
-            method: 'GET',
-            data: null
-        });
-    }
+	updateBio({ bio }) {
+		return this.http({
+			path: 'profile',
+			method: 'POST',
+			data: {
+				bio
+			}
+		});
+	}
 
-    updateGender({ gender }) {
-        return this.http({
-            path: 'profile',
-            method: 'POST',
-            data: {
-                gender
-            }
-        });
-    }
+	updateJob({ id }) {
+		return this.http({
+			path: 'profile/job',
+			method: 'PUT',
+			data: {
+				company: {
+					id
+				}
+			}
+		});
+	}
 
-    updateBio({ bio }) {
-        return this.http({
-            path: 'profile',
-            method: 'POST',
-            data: {
-                bio
-            }
-        });
-    }
+	deleteJob() {
+		return this.http({
+			path: 'profile/job',
+			method: 'DELETE',
+			data: null
+		});
+	}
 
-    updateJob({ id }) {
-        return this.http({
-            path: 'profile/job',
-            method: 'PUT',
-            data: {
-                company: {
-                    id
-                }
-            }
-        });
-    }
+	updateSchool({ id }) {
+		return this.http({
+			path: 'profile/school',
+			method: 'PUT',
+			data: {
+				schools: [{
+					id
+				}]
+			}
+		});
+	}
 
-    deleteJob() {
-        return this.http({
-            path: 'profile/job',
-            method: 'DELETE',
-            data: null
-        });
-    }
+	deleteSchool() {
+		return this.http({
+			path: 'profiile/school',
+			method: 'DELETE',
+			data: null
+		});
+	}
 
-    updateSchool({ id }) {
-        return this.http({
-            path: 'profile/school',
-            method: 'PUT',
-            data: {
-                schools: [{
-                    id
-                }]
-            }
-        });
-    }
+	updatePreferences({ discovery, ageMin, ageMax, gender, distance }) {
+		return this.http({
+			path: 'profile',
+			method: 'POST',
+			data: {
+				discoverable: discovery,
+				age_filter_min: ageMin,
+				age_filter_max: ageMax,
+				gender_filter: gender,
+				distance_filter: distance
+			}
+		});
+	}
 
-    deleteSchool() {
-        return this.http({
-            path: 'profiile/school',
-            method: 'DELETE',
-            data: null
-        });
-    }
+	deleteAccount() {
+		return this.http({
+			path: 'profile',
+			method: 'DELETE',
+			data: null
+		});
+	}
 
-    updatePreferences({ discovery, ageMin, ageMax, gender, distance }) {
-        return this.http({
-            path: 'profile',
-            method: 'POST',
-            data: {
-                discoverable: discovery,
-                age_filter_min: ageMin,
-                age_filter_max: ageMax,
-                gender_filter: gender,
-                distance_filter: distance
-            }
-        });
-    }
+	getUser({ userId }) {
+		this.http({
+			path: `user/${userId}`,
+			method: 'GET',
+			data: null
+		});
+	}
 
-    deleteAccount() {
-        return this.http({
-            path: 'profile',
-            method: 'DELETE',
-            data: null
-        });
-    }
+	uploadPicture({ file }) {
+		var _this4 = this;
 
-    getUser({ userId }) {
-        this.http({
-            path: `user/${userId}`,
-            method: 'GET',
-            data: null
-        });
-    }
+		return _asyncToGenerator(function* () {
+			const url = `${TINDER_IMAGE_HOST}image?client_photo_id=ProfilePhoto${new Date().getTime()}`;
 
-    uploadPicture({ file }) {
-        var _this4 = this;
+			const form = new FormData();
+			form.append('userId', _this4.userId);
+			form.append('file', file);
 
-        return _asyncToGenerator(function* () {
-            const url = `${TINDER_IMAGE_HOST}image?client_photo_id=ProfilePhoto${new Date().getTime()}`;
+			const res = yield fetch(url, {
+				method: 'POST',
+				headers: _this4.requestImageHeaders,
+				body: form
+			});
 
-            const form = new FormData();
-            form.append('userId', _this4.userId);
-            form.append('file', file);
+			if (!res.ok) {
+				const body = res.text();
+				throw new Error(body);
+			} else {
+				return res.json();
+			}
+		})();
+	}
 
-            const res = yield fetch(url, {
-                method: 'POST',
-                headers: _this4.requestImageHeaders,
-                body: form
-            });
+	uploadFBPicture({
+		pictureId,
+		xdistance_percent,
+		ydistance_percent,
+		xoffset_percent,
+		yoffset_percent
+	}) {
+		return this.http({
+			path: 'media',
+			method: 'POST',
+			data: {
+				transmit: 'fb',
+				assets: [{
+					ydistance_percent: ydistance_percent,
+					id: pictureId,
+					xoffset_percent: xoffset_percent,
+					yoffset_percent: yoffset_percent,
+					xdistance_percent: xdistance_percent
+				}]
+			}
+		});
+	}
 
-            if (!res.ok) {
-                const body = res.text();
-                throw new Error(body);
-            } else {
-                return res.json();
-            }
-        })();
-    }
+	deletePicture({ pictureId }) {
+		return this.http({
+			path: 'media',
+			method: 'DELETE',
+			data: {
+				assets: [pictureId]
+			}
+		});
+	}
 
-    uploadFBPicture({ pictureId, xdistance_percent, ydistance_percent, xoffset_percent, yoffset_percent }) {
-        return this.http({
-            path: 'media',
-            method: 'POST',
-            data: {
-                transmit: "fb",
-                assets: [{
-                    ydistance_percent: ydistance_percent,
-                    id: pictureId,
-                    xoffset_percent: xoffset_percent,
-                    yoffset_percent: yoffset_percent,
-                    xdistance_percent: xdistance_percent
-                }]
-            }
-        });
-    }
+	getShareLink({ userId }) {
+		return this.http({
+			path: `/user${userId}/share`,
+			method: 'POST',
+			data: null
+		});
+	}
 
-    deletePicture({ pictureId }) {
-        return this.http({
-            path: 'media',
-            method: 'DELETE',
-            data: {
-                assets: [pictureId]
-            }
-        });
-    }
+	report({ userId, causeId, causeText }) {
+		const data = {
+			cause: causeId
+		};
 
-    getShareLink({ userId }) {
-        return this.http({
-            path: `/user${userId}/share`,
-            method: 'POST',
-            data: null
-        });
-    }
+		if (causeId === 0 && causeText !== null) {
+			data.text = causeText;
+		}
 
-    report({ userId, causeId, causeText }) {
-        const data = {
-            cause: causeId
-        };
+		return this.http({
+			path: `report/${userId}`,
+			method: 'POST',
+			data
+		});
+	}
 
-        if (causeId === 0 && causeText !== null) {
-            data.text = causeText;
-        }
+	createUsername({ username }) {
+		return this.http({
+			path: 'profile/username',
+			method: 'POST',
+			data: {
+				username
+			}
+		});
+	}
 
-        return this.http({
-            path: `report/${userId}`,
-            method: 'POST',
-            data
-        });
-    }
+	changeUsername({ username }) {
+		return this.http({
+			path: 'profile/username',
+			method: 'PUT',
+			data: {
+				username
+			}
+		});
+	}
 
-    createUsername({ username }) {
-        return this.http({
-            path: 'profile/username',
-            method: 'POST',
-            data: {
-                username
-            }
-        });
-    }
+	deleteUsername() {
+		return this.http({
+			path: 'profile/username',
+			method: 'DELETE',
+			data: null
+		});
+	}
 
-    changeUsername({ username }) {
-        return this.http({
-            path: 'profile/username',
-            method: 'PUT',
-            data: {
-                username
-            }
-        });
-    }
+	///////////// TINDER PLUS /////////////////
 
-    deleteUsername() {
-        return this.http({
-            path: 'profile/username',
-            method: 'DELETE',
-            data: null
-        });
-    }
+	updatePassport({ lat, lon }) {
+		return this.http({
+			path: '/passport/user/travel',
+			method: 'POST',
+			data: {
+				lat,
+				lon
+			}
+		});
+	}
 
-    ///////////// TINDER PLUS /////////////////
-
-    updatePassport({ lat, lon }) {
-        return this.http({
-            path: '/passport/user/travel',
-            method: 'POST',
-            data: {
-                lat,
-                lon
-            }
-        });
-    }
-
-    resetPassport() {
-        return this.http({
-            path: '/passport/user/reset',
-            method: 'POST',
-            data: null
-        });
-    }
+	resetPassport() {
+		return this.http({
+			path: '/passport/user/reset',
+			method: 'POST',
+			data: null
+		});
+	}
 }
 
 module.exports = TinderClient;

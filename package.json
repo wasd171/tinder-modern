@@ -30,7 +30,7 @@
   "scripts": {
     "clean": "rimraf dist/",
     "build": "npm run clean && rollup -c rollup-configs/cjs.js && rollup -c rollup-configs/es.js",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged && npm run build && git add dist/*.js"
   },
   "lint-staged": {
     "(src|rollup-configs)/**/*.js": [
