@@ -1,4 +1,3 @@
-// @flow
 import shared from './shared'
 
 const config = Object.assign({}, shared, {
