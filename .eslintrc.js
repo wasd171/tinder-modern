@@ -43,5 +43,10 @@ module.exports = {
             singleQuote: true,
             semi: false
         }]
+    },
+    settings: {
+        flowtype: {
+            onlyFilesWithFlowAnnotation: true
+        }
     }
 }
