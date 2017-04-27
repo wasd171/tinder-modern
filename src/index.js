@@ -184,6 +184,32 @@ class TinderClient {
 		}
 	}
 
+	async isOnline(timeout: void | number = 5000) {
+		try {
+			const fetchPromise: Promise<
+				Response
+			> = fetch(`${TINDER_HOST}meta`, {
+				method: 'GET'
+			})
+			const timeoutPromise: Promise<
+				any
+			> = new Promise((resolve, reject) => {
+				setTimeout(reject, timeout)
+			})
+			const res: Response = await Promise.race([
+				fetchPromise,
+				timeoutPromise
+			])
+			if (res.status === 401) {
+				return true
+			} else {
+				throw new Error('Unexpected status')
+			}
+		} catch (err) {
+			return false
+		}
+	}
+
 	async authorize({ fbToken, fbId }: AuthorizeArgsType) {
 		const res: any = await this.http({
 			path: 'auth',

@@ -64,6 +64,27 @@ class TinderClient {
 		})();
 	}
 
+	isOnline(timeout = 5000) {
+		return _asyncToGenerator(function* () {
+			try {
+				const fetchPromise = fetch(`${TINDER_HOST}meta`, {
+					method: 'GET'
+				});
+				const timeoutPromise = new Promise(function (resolve, reject) {
+					setTimeout(reject, timeout);
+				});
+				const res = yield Promise.race([fetchPromise, timeoutPromise]);
+				if (res.status === 401) {
+					return true;
+				} else {
+					throw new Error('Unexpected status');
+				}
+			} catch (err) {
+				return false;
+			}
+		})();
+	}
+
 	authorize({ fbToken, fbId }) {
 		var _this2 = this;
 
