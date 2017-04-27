@@ -402,7 +402,7 @@ class TinderClient {
 	}
 
 	getUser({ userId }: GetUserArgsType) {
-		this.http({
+		return this.http({
 			path: `user/${userId}`,
 			method: 'GET',
 			data: null
