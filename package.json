@@ -1,6 +1,6 @@
 {
   "name": "tinder-modern",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Node.js bindings to Tinder API",
   "main": "dist/bundle.js",
   "module": "dist/bundle.es.js",
