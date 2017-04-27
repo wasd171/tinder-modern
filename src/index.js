@@ -184,7 +184,7 @@ class TinderClient {
 		}
 	}
 
-	async isOnline(timeout: void | number = 5000) {
+	static async isOnline(timeout: void | number = 5000) {
 		try {
 			const fetchPromise: Promise<
 				Response

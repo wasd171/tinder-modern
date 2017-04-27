@@ -64,7 +64,7 @@ class TinderClient {
 		})();
 	}
 
-	isOnline(timeout = 5000) {
+	static isOnline(timeout = 5000) {
 		return _asyncToGenerator(function* () {
 			try {
 				const fetchPromise = fetch(`${TINDER_HOST}meta`, {
