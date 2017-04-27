@@ -1,6 +1,6 @@
 {
   "name": "tinder-modern",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Node.js bindings to Tinder API",
   "main": "dist/bundle.js",
   "module": "dist/bundle.es.js",
@@ -37,13 +37,14 @@
   },
   "lint-staged": {
     "{src,rollup-configs}/*.js": [
-        "eslint --fix",
-        "npm run flow",
-        "git add"
-      ]
+      "eslint --fix",
+      "npm run flow",
+      "git add"
+    ]
   },
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
-    "isomorphic-form-data": "^1.0.0"
+    "isomorphic-form-data": "^1.0.0",
+    "xmlhttprequest": "^1.8.0"
   }
 }
