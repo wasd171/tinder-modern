@@ -1,7 +1,6 @@
 // @flow
-import 'isomorphic-fetch'
-import 'isomorphic-form-data'
-import { XMLHttpRequest } from 'xmlhttprequest'
+import fetch from 'node-fetch'
+import FormData from 'form-data'
 
 const TINDER_HOST: string = 'https://api.gotinder.com/'
 const TINDER_IMAGE_HOST: string = 'https://imageupload.gotinder.com/'
@@ -169,7 +168,8 @@ class TinderClient {
 		const res: Response = await fetch(`${TINDER_HOST}${path}`, {
 			method,
 			headers: this.requestHeaders,
-			body: JSON.stringify(data)
+			body: JSON.stringify(data),
+			timeout: 10000
 		})
 
 		if (!res.ok) {
@@ -187,17 +187,11 @@ class TinderClient {
 
 	static async isOnline(timeout: void | number = 5000) {
 		try {
-			const status: number = await new Promise((resolve, reject) => {
-				const xhr: XMLHttpRequest = new XMLHttpRequest()
-				xhr.timeout = timeout
-				xhr.addEventListener('timeout', reject)
-				xhr.addEventListener('error', reject)
-				xhr.addEventListener('load', () => resolve(xhr.status))
-				xhr.open('GET', `${TINDER_HOST}meta`, true)
-				xhr.send(null)
+			const res: Response = await fetch(`${TINDER_HOST}meta`, {
+				timeout
 			})
 
-			if (status === 401) {
+			if (res.status === 401) {
 				return true
 			} else {
 				throw new Error('Unexpected status')
