@@ -13,8 +13,6 @@
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-preset-env": "^1.4.0",
     "eslint": "^3.19.0",
-    "eslint-config-airbnb": "^14.1.0",
-    "eslint-config-google": "^0.7.1",
     "eslint-config-prettier": "^1.7.0",
     "eslint-plugin-flowtype": "^2.32.1",
     "eslint-plugin-import": "^2.2.0",
@@ -22,6 +20,7 @@
     "eslint-plugin-prettier": "^2.0.1",
     "eslint-plugin-react": "^6.10.3",
     "flow-bin": "^0.44.2",
+    "flow-typed": "^2.1.2",
     "husky": "^0.13.3",
     "lint-staged": "^3.4.0",
     "prettier": "^1.2.2",
@@ -33,7 +32,8 @@
     "clean": "rimraf dist/",
     "build": "npm run clean && rollup -c rollup-configs/cjs.js && rollup -c rollup-configs/es.js",
     "precommit": "lint-staged && npm run build && git add dist/*.js",
-    "flow": "flow check-contents <"
+    "flow": "flow check-contents <",
+    "postinstall": "flow-typed install"
   },
   "lint-staged": {
     "{src,rollup-configs}/*.js": [
@@ -43,8 +43,7 @@
     ]
   },
   "dependencies": {
-    "isomorphic-fetch": "^2.2.1",
-    "isomorphic-form-data": "^1.0.0",
-    "xmlhttprequest": "^1.8.0"
+    "form-data": "^2.1.4",
+    "node-fetch": "^1.6.3"
   }
 }
