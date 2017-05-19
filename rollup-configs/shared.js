@@ -7,5 +7,5 @@ export default {
 			exclude: 'node_modules/**'
 		})
 	],
-	external: ['isomorphic-fetch', 'isomorphic-form-data', 'xmlhttprequest']
+	external: ['node-fetch', 'form-data']
 }
