@@ -140,7 +140,7 @@ class TinderClient {
 	userId: UserIdType = null
 	defaults: DefaultsType = null
 
-	get requestHeaders(): Headers {
+	get requestHeaders(): RequestHeadersParamsType {
 		const headers: RequestHeadersParamsType = {
 			'User-Agent': 'Tinder Android Version 4.5.5',
 			os_version: '23',
@@ -154,12 +154,12 @@ class TinderClient {
 			headers['X-Auth-Token'] = this.xAuthToken
 		}
 
-		return new Headers(headers)
+		return headers
 	}
 
-	get requestImageHeaders(): Headers {
-		const headers: Headers = this.requestHeaders
-		headers.set('Content-Type', 'multipart/form-data')
+	get requestImageHeaders(): RequestHeadersParamsType {
+		const headers: RequestHeadersParamsType = this.requestHeaders
+		headers['Content-Type'] = 'multipart/form-data'
 
 		return headers
 	}

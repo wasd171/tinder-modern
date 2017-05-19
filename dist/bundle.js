@@ -32,12 +32,12 @@ class TinderClient {
 			headers['X-Auth-Token'] = this.xAuthToken;
 		}
 
-		return new Headers(headers);
+		return headers;
 	}
 
 	get requestImageHeaders() {
 		const headers = this.requestHeaders;
-		headers.set('Content-Type', 'multipart/form-data');
+		headers['Content-Type'] = 'multipart/form-data';
 
 		return headers;
 	}
