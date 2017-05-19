@@ -1,6 +1,5 @@
-import 'isomorphic-fetch';
-import 'isomorphic-form-data';
-import { XMLHttpRequest } from 'xmlhttprequest';
+import fetch from 'node-fetch';
+import FormData from 'form-data';
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
@@ -46,7 +45,8 @@ class TinderClient {
 			const res = yield fetch(`${TINDER_HOST}${path}`, {
 				method,
 				headers: _this.requestHeaders,
-				body: JSON.stringify(data)
+				body: JSON.stringify(data),
+				timeout: 10000
 			});
 
 			if (!res.ok) {
@@ -66,19 +66,11 @@ class TinderClient {
 	static isOnline(timeout = 5000) {
 		return _asyncToGenerator(function* () {
 			try {
-				const status = yield new Promise(function (resolve, reject) {
-					const xhr = new XMLHttpRequest();
-					xhr.timeout = timeout;
-					xhr.addEventListener('timeout', reject);
-					xhr.addEventListener('error', reject);
-					xhr.addEventListener('load', function () {
-						return resolve(xhr.status);
-					});
-					xhr.open('GET', `${TINDER_HOST}meta`, true);
-					xhr.send(null);
+				const res = yield fetch(`${TINDER_HOST}meta`, {
+					timeout
 				});
 
-				if (status === 401) {
+				if (res.status === 401) {
 					return true;
 				} else {
 					throw new Error('Unexpected status');
