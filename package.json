@@ -32,8 +32,7 @@
     "clean": "rimraf dist/",
     "build": "npm run clean && rollup -c rollup-configs/cjs.js && rollup -c rollup-configs/es.js",
     "precommit": "lint-staged && npm run build && git add dist/*.js",
-    "flow": "flow check-contents <",
-    "postinstall": "flow-typed install"
+    "flow": "flow check-contents <"
   },
   "lint-staged": {
     "{src,rollup-configs}/*.js": [
