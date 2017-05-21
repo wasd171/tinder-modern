@@ -13,6 +13,10 @@ type UserIdType = string | null
 
 type DefaultsType = any
 
+type ConstructorArgsType = {
+	lastActivityDate: LastActivityType | void
+}
+
 type RequestHeadersParamsType = {
 	'Accept-Language': string,
 	'app-version': string,
@@ -136,9 +140,13 @@ type UpdatePassportArgsType = {
 
 class TinderClient {
 	xAuthToken: XAuthTokenType = null
-	lastActivity: LastActivityType = new Date()
+	lastActivity: LastActivityType
 	userId: UserIdType = null
 	defaults: DefaultsType = null
+
+	constructor({ lastActivityDate }: ConstructorArgsType) {
+		this.lastActivity = lastActivityDate || new Date()
+	}
 
 	get requestHeaders(): RequestHeadersParamsType {
 		const headers: RequestHeadersParamsType = {

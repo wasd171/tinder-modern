@@ -7,11 +7,13 @@ const TINDER_HOST = 'https://api.gotinder.com/';
 const TINDER_IMAGE_HOST = 'https://imageupload.gotinder.com/';
 
 class TinderClient {
-	constructor() {
+
+	constructor({ lastActivityDate }) {
 		this.xAuthToken = null;
-		this.lastActivity = new Date();
 		this.userId = null;
 		this.defaults = null;
+
+		this.lastActivity = lastActivityDate || new Date();
 	}
 
 	get requestHeaders() {
