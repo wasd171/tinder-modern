@@ -1,199 +1,41 @@
-// @flow
-import fetch from 'node-fetch'
-import FormData from 'form-data'
+import * as FormData from 'form-data'
+import fetch, { Response } from 'node-fetch'
+import {
+	DefaultsType,
+	IAuthorizeArgs,
+	IConstructorArgs,
+	ICreateUsernameArgs,
+	IDeletePictureArgs,
+	IGetRecommendationsArgs,
+	IGetShareLinkArgs,
+	IGetUserArgs,
+	IHTTPArgs,
+	ILikeArgs,
+	IReportArgs,
+	IReportData,
+	IRequestHeadersParams,
+	ISendMessageArgs,
+	ISetAuthTokenArgs,
+	IUnmatchArgs,
+	IUpdateBioArgs,
+	IUpdateGenderArgs,
+	IUpdateJobArgs,
+	IUpdatePassportArgs,
+	IUpdatePositionArgs,
+	IUpdatePreferencesArgs,
+	IUpdateSchoolArgs,
+	IUploadFBPictureArgs,
+	IUploadPictureArgs,
+	LastActivityType,
+	UserIdType,
+	XAuthTokenType
+} from './interfaces'
 
 const TINDER_HOST: string = 'https://api.gotinder.com/'
 const TINDER_IMAGE_HOST: string = 'https://imageupload.gotinder.com/'
 
-type XAuthTokenType = string | null
-
-type LastActivityType = Date
-
-type UserIdType = string | null
-
-type DefaultsType = any
-
-type ConstructorArgsType = {
-	lastActivityDate: LastActivityType | void
-}
-
-type RequestHeadersParamsType = {
-	'Accept-Language': string,
-	'app-version': string,
-	'Content-Type': string,
-	'User-Agent': string,
-	'X-Auth-Token'?: string,
-	os_version: string,
-	platform: string
-}
-
-type HTTPArgsType = {
-	data: any | void,
-	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-	path: string
-}
-
-type AuthorizeArgsType = {
-	fbId: string,
-	fbToken: string
-}
-
-type SetAuthTokenArgsType = {
-	token: string
-}
-
-type GetRecommendationsArgsType = {
-	limit: number
-}
-
-type SendMessageArgsType = {
-	matchId: string,
-	message: string
-}
-
-type LikeArgsType = {
-	userId: string
-}
-
-type SuperLikeArgsType = LikeArgsType
-
-type PassArgsType = LikeArgsType
-
-type UnmatchArgsType = {
-	matchId: string
-}
-
-type UpdatePositionArgsType = {
-	lat: number,
-	lon: number
-}
-
-type UpdateGenderArgsType = {
-	gender: 0 | 1
-}
-
-type UpdateBioArgsType = {
-	bio: string
-}
-
-type UpdateJobArgsType = {
-	id: string
-}
-
-type UpdateSchoolArgsType = {
-	id: string
-}
-
-type UpdatePreferencesArgsType = {
-	ageMax: number,
-	ageMin: number,
-	discovery: boolean,
-	distance: number,
-	gender: -1 | 0 | 1
-}
-
-type GetUserArgsType = {
-	userId: string
-}
-
-type UploadPictureArgsType = {
-	file: Blob
-}
-
-type UploadFBPictureArgsType = {
-	pictureId: string,
-	xdistance_percent: number,
-	xoffset_percent: number,
-	ydistance_percent: number,
-	yoffset_percent: number
-}
-
-type DeletePictureArgsType = {
-	pictureId: string
-}
-
-type GetShareLinkArgsType = {
-	userId: string
-}
-
-type ReportArgsType = {
-	causeId: 0 | 1 | 4,
-	causeText: string,
-	userId: string
-}
-
-type ReportDataType = {
-	cause: 0 | 1 | 4,
-	text?: string
-}
-
-type CreateUsernameArgsType = {
-	username: string
-}
-
-type ChangeUsernameArgsType = CreateUsernameArgsType
-
-type UpdatePassportArgsType = {
-	lat: number,
-	lon: number
-}
-
 class TinderClient {
-	xAuthToken: XAuthTokenType = null
-	lastActivity: LastActivityType
-	userId: UserIdType = null
-	defaults: DefaultsType = null
-
-	constructor({ lastActivityDate }: ConstructorArgsType) {
-		this.lastActivity = lastActivityDate || new Date()
-	}
-
-	get requestHeaders(): RequestHeadersParamsType {
-		const headers: RequestHeadersParamsType = {
-			'User-Agent': 'Tinder Android Version 4.5.5',
-			os_version: '23',
-			platform: 'android',
-			'app-version': '854',
-			'Accept-Language': 'en',
-			'Content-Type': 'application/json'
-		}
-
-		if (this.xAuthToken !== null) {
-			headers['X-Auth-Token'] = this.xAuthToken
-		}
-
-		return headers
-	}
-
-	get requestImageHeaders(): RequestHeadersParamsType {
-		const headers: RequestHeadersParamsType = this.requestHeaders
-		headers['Content-Type'] = 'multipart/form-data'
-
-		return headers
-	}
-
-	async http({ path, method, data }: HTTPArgsType) {
-		const res: Response = await fetch(`${TINDER_HOST}${path}`, {
-			method,
-			headers: this.requestHeaders,
-			body: JSON.stringify(data),
-			timeout: 10000
-		})
-
-		if (!res.ok) {
-			const body: string = await res.text()
-			throw new Error(body)
-		} else {
-			const body: any = await res.json()
-			if (body.error !== undefined) {
-				throw new Error(body.error)
-			} else {
-				return body
-			}
-		}
-	}
-
-	static async isOnline(timeout: void | number = 5000) {
+	public static async isOnline(timeout: undefined | number = 5000) {
 		try {
 			const res: Response = await fetch(`${TINDER_HOST}meta`, {
 				timeout
@@ -209,7 +51,40 @@ class TinderClient {
 		}
 	}
 
-	async authorize({ fbToken, fbId }: AuthorizeArgsType) {
+	private xAuthToken: XAuthTokenType = null
+	private lastActivity: LastActivityType
+	private userId: UserIdType = null
+	private defaults: DefaultsType = null
+
+	constructor({ lastActivityDate }: IConstructorArgs) {
+		this.lastActivity = lastActivityDate || new Date()
+	}
+
+	get requestHeaders(): IRequestHeadersParams {
+		const headers: IRequestHeadersParams = {
+			'User-Agent': 'Tinder Android Version 4.5.5',
+			os_version: '23',
+			platform: 'android',
+			'app-version': '854',
+			'Accept-Language': 'en',
+			'Content-Type': 'application/json'
+		}
+
+		if (this.xAuthToken !== null) {
+			headers['X-Auth-Token'] = this.xAuthToken
+		}
+
+		return headers
+	}
+
+	get requestImageHeaders(): IRequestHeadersParams {
+		const headers: IRequestHeadersParams = this.requestHeaders
+		headers['Content-Type'] = 'multipart/form-data'
+
+		return headers
+	}
+
+	public async authorize({ fbToken, fbId }: IAuthorizeArgs) {
 		const res: any = await this.http({
 			path: 'auth',
 			method: 'POST',
@@ -227,19 +102,19 @@ class TinderClient {
 		return res
 	}
 
-	setAuthToken({ token }: SetAuthTokenArgsType) {
+	public setAuthToken({ token }: ISetAuthTokenArgs) {
 		this.xAuthToken = token
 	}
 
-	getAuthToken() {
+	public getAuthToken() {
 		return this.xAuthToken
 	}
 
-	getDefaults() {
+	public getDefaults() {
 		return this.defaults
 	}
 
-	getRecommendations({ limit }: GetRecommendationsArgsType) {
+	public getRecommendations({ limit }: IGetRecommendationsArgs) {
 		return this.http({
 			path: 'user/recs',
 			method: 'GET',
@@ -249,7 +124,7 @@ class TinderClient {
 		})
 	}
 
-	sendMessage({ matchId, message }: SendMessageArgsType) {
+	public sendMessage({ matchId, message }: ISendMessageArgs) {
 		return this.http({
 			path: `user/matches/${matchId}`,
 			method: 'POST',
@@ -259,7 +134,7 @@ class TinderClient {
 		})
 	}
 
-	like({ userId }: LikeArgsType) {
+	public like({ userId }: ILikeArgs) {
 		return this.http({
 			path: `like/${userId}`,
 			method: 'GET',
@@ -267,7 +142,7 @@ class TinderClient {
 		})
 	}
 
-	superLike({ userId }: SuperLikeArgsType) {
+	public superLike({ userId }: ILikeArgs) {
 		return this.http({
 			path: `like/${userId}/super`,
 			method: 'GET',
@@ -275,7 +150,7 @@ class TinderClient {
 		})
 	}
 
-	pass({ userId }: PassArgsType) {
+	public pass({ userId }: ILikeArgs) {
 		return this.http({
 			path: `pass/${userId}`,
 			method: 'GET',
@@ -283,7 +158,7 @@ class TinderClient {
 		})
 	}
 
-	unmatch({ matchId }: UnmatchArgsType) {
+	public unmatch({ matchId }: IUnmatchArgs) {
 		return this.http({
 			path: `user/matches/${matchId}`,
 			method: 'DELETE',
@@ -291,7 +166,7 @@ class TinderClient {
 		})
 	}
 
-	async getUpdates() {
+	public async getUpdates() {
 		const res: any = await this.http({
 			path: 'updates',
 			method: 'POST',
@@ -307,7 +182,7 @@ class TinderClient {
 		return res
 	}
 
-	getHistory() {
+	public getHistory() {
 		return this.http({
 			path: 'updates',
 			method: 'POST',
@@ -317,7 +192,7 @@ class TinderClient {
 		})
 	}
 
-	updatePosition({ lon, lat }: UpdatePositionArgsType) {
+	public updatePosition({ lon, lat }: IUpdatePositionArgs) {
 		return this.http({
 			path: 'user/ping',
 			method: 'POST',
@@ -328,7 +203,7 @@ class TinderClient {
 		})
 	}
 
-	getAccount() {
+	public getAccount() {
 		return this.http({
 			path: 'meta',
 			method: 'GET',
@@ -336,7 +211,7 @@ class TinderClient {
 		})
 	}
 
-	updateGender({ gender }: UpdateGenderArgsType) {
+	public updateGender({ gender }: IUpdateGenderArgs) {
 		return this.http({
 			path: 'profile',
 			method: 'POST',
@@ -346,7 +221,7 @@ class TinderClient {
 		})
 	}
 
-	updateBio({ bio }: UpdateBioArgsType) {
+	public updateBio({ bio }: IUpdateBioArgs) {
 		return this.http({
 			path: 'profile',
 			method: 'POST',
@@ -356,7 +231,7 @@ class TinderClient {
 		})
 	}
 
-	updateJob({ id }: UpdateJobArgsType) {
+	public updateJob({ id }: IUpdateJobArgs) {
 		return this.http({
 			path: 'profile/job',
 			method: 'PUT',
@@ -368,7 +243,7 @@ class TinderClient {
 		})
 	}
 
-	deleteJob() {
+	public deleteJob() {
 		return this.http({
 			path: 'profile/job',
 			method: 'DELETE',
@@ -376,7 +251,7 @@ class TinderClient {
 		})
 	}
 
-	updateSchool({ id }: UpdateSchoolArgsType) {
+	public updateSchool({ id }: IUpdateSchoolArgs) {
 		return this.http({
 			path: 'profile/school',
 			method: 'PUT',
@@ -390,7 +265,7 @@ class TinderClient {
 		})
 	}
 
-	deleteSchool() {
+	public deleteSchool() {
 		return this.http({
 			path: 'profiile/school',
 			method: 'DELETE',
@@ -398,13 +273,13 @@ class TinderClient {
 		})
 	}
 
-	updatePreferences({
+	public updatePreferences({
 		discovery,
 		ageMin,
 		ageMax,
 		gender,
 		distance
-	}: UpdatePreferencesArgsType) {
+	}: IUpdatePreferencesArgs) {
 		return this.http({
 			path: 'profile',
 			method: 'POST',
@@ -418,7 +293,7 @@ class TinderClient {
 		})
 	}
 
-	deleteAccount() {
+	public deleteAccount() {
 		return this.http({
 			path: 'profile',
 			method: 'DELETE',
@@ -426,7 +301,7 @@ class TinderClient {
 		})
 	}
 
-	getUser({ userId }: GetUserArgsType) {
+	public getUser({ userId }: IGetUserArgs) {
 		return this.http({
 			path: `user/${userId}`,
 			method: 'GET',
@@ -434,7 +309,7 @@ class TinderClient {
 		})
 	}
 
-	async uploadPicture({ file }: UploadPictureArgsType) {
+	public async uploadPicture({ file }: IUploadPictureArgs) {
 		const url: string = `${TINDER_IMAGE_HOST}image?client_photo_id=ProfilePhoto${new Date().getTime()}`
 
 		const form: FormData = new FormData()
@@ -458,13 +333,13 @@ class TinderClient {
 		}
 	}
 
-	uploadFBPicture({
+	public uploadFBPicture({
 		pictureId,
 		xdistance_percent,
 		ydistance_percent,
 		xoffset_percent,
 		yoffset_percent
-	}: UploadFBPictureArgsType) {
+	}: IUploadFBPictureArgs) {
 		return this.http({
 			path: 'media',
 			method: 'POST',
@@ -472,18 +347,18 @@ class TinderClient {
 				transmit: 'fb',
 				assets: [
 					{
-						ydistance_percent: ydistance_percent,
+						ydistance_percent,
 						id: pictureId,
-						xoffset_percent: xoffset_percent,
-						yoffset_percent: yoffset_percent,
-						xdistance_percent: xdistance_percent
+						xoffset_percent,
+						yoffset_percent,
+						xdistance_percent
 					}
 				]
 			}
 		})
 	}
 
-	deletePicture({ pictureId }: DeletePictureArgsType) {
+	public deletePicture({ pictureId }: IDeletePictureArgs) {
 		return this.http({
 			path: 'media',
 			method: 'DELETE',
@@ -493,7 +368,7 @@ class TinderClient {
 		})
 	}
 
-	getShareLink({ userId }: GetShareLinkArgsType) {
+	public getShareLink({ userId }: IGetShareLinkArgs) {
 		return this.http({
 			path: `/user${userId}/share`,
 			method: 'POST',
@@ -501,8 +376,8 @@ class TinderClient {
 		})
 	}
 
-	report({ userId, causeId, causeText }: ReportArgsType) {
-		const data: ReportDataType = {
+	public report({ userId, causeId, causeText }: IReportArgs) {
+		const data: IReportData = {
 			cause: causeId
 		}
 
@@ -517,7 +392,7 @@ class TinderClient {
 		})
 	}
 
-	createUsername({ username }: CreateUsernameArgsType) {
+	public createUsername({ username }: ICreateUsernameArgs) {
 		return this.http({
 			path: 'profile/username',
 			method: 'POST',
@@ -527,7 +402,7 @@ class TinderClient {
 		})
 	}
 
-	changeUsername({ username }: ChangeUsernameArgsType) {
+	public changeUsername({ username }: ICreateUsernameArgs) {
 		return this.http({
 			path: 'profile/username',
 			method: 'PUT',
@@ -537,7 +412,7 @@ class TinderClient {
 		})
 	}
 
-	deleteUsername() {
+	public deleteUsername() {
 		return this.http({
 			path: 'profile/username',
 			method: 'DELETE',
@@ -547,7 +422,7 @@ class TinderClient {
 
 	///////////// TINDER PLUS /////////////////
 
-	updatePassport({ lat, lon }: UpdatePassportArgsType) {
+	public updatePassport({ lat, lon }: IUpdatePassportArgs) {
 		return this.http({
 			path: '/passport/user/travel',
 			method: 'POST',
@@ -558,12 +433,33 @@ class TinderClient {
 		})
 	}
 
-	resetPassport() {
+	public resetPassport() {
 		return this.http({
 			path: '/passport/user/reset',
 			method: 'POST',
 			data: null
 		})
+	}
+
+	private async http({ path, method, data }: IHTTPArgs) {
+		const res: Response = await fetch(`${TINDER_HOST}${path}`, {
+			method,
+			headers: this.requestHeaders,
+			body: JSON.stringify(data),
+			timeout: 10000
+		})
+
+		if (!res.ok) {
+			const body: string = await res.text()
+			throw new Error(body)
+		} else {
+			const body: any = await res.json()
+			if (body.error !== undefined) {
+				throw new Error(body.error)
+			} else {
+				return body
+			}
+		}
 	}
 }
 
