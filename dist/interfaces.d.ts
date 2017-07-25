@@ -5,15 +5,19 @@ export declare type DefaultsType = any;
 export interface IConstructorArgs {
     lastActivityDate?: LastActivityType;
 }
-export interface IRequestHeadersParams {
+export interface IGeneralRequestHeadersParams {
     'Accept-Language': string;
     'app-version': string;
     'Content-Type': string;
     'User-Agent': string;
-    'X-Auth-Token'?: string;
     os_version: string;
     platform: string;
+    [key: string]: string;
 }
+export interface IAuthRequestHeadersParams {
+    'X-Auth-Token': string;
+}
+export declare type IRequestHeadersParams = IGeneralRequestHeadersParams & (IGeneralRequestHeadersParams | IAuthRequestHeadersParams);
 export interface IHTTPArgs {
     data: any | void;
     method: 'GET' | 'POST' | 'PUT' | 'DELETE';

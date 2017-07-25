@@ -1,8 +1,8 @@
-import { IAuthorizeArgs, IConstructorArgs, ICreateUsernameArgs, IDeletePictureArgs, IGetRecommendationsArgs, IGetShareLinkArgs, IGetUserArgs, ILikeArgs, IReportArgs, IRequestHeadersParams, ISendMessageArgs, ISetAuthTokenArgs, IUnmatchArgs, IUpdateBioArgs, IUpdateGenderArgs, IUpdateJobArgs, IUpdatePassportArgs, IUpdatePositionArgs, IUpdatePreferencesArgs, IUpdateSchoolArgs, IUploadFBPictureArgs, IUploadPictureArgs } from './interfaces';
+import { IAuthorizeArgs, IConstructorArgs, ICreateUsernameArgs, IDeletePictureArgs, IGetRecommendationsArgs, IGetShareLinkArgs, IGetUserArgs, ILikeArgs, IReportArgs, IRequestHeadersParams, ISendMessageArgs, ISetAuthTokenArgs, IUnmatchArgs, IUpdateBioArgs, IUpdateGenderArgs, IUpdateJobArgs, IUpdatePassportArgs, IUpdatePositionArgs, IUpdatePreferencesArgs, IUpdateSchoolArgs, IUploadFBPictureArgs, IUploadPictureArgs, LastActivityType } from './interfaces';
 declare class TinderClient {
     static isOnline(timeout?: undefined | number): Promise<boolean>;
+    lastActivity: LastActivityType;
     private xAuthToken;
-    private lastActivity;
     private userId;
     private defaults;
     constructor({lastActivityDate}: IConstructorArgs);
