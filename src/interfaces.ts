@@ -10,17 +10,6 @@ export interface IConstructorArgs {
 	lastActivityDate?: LastActivityType
 }
 
-// export interface IRequestHeadersParams {
-// 	'Accept-Language': string
-// 	'app-version': string
-// 	'Content-Type': string
-// 	'User-Agent': string
-// 	'X-Auth-Token'?: string
-// 	os_version: string
-// 	platform: string
-// 	[key: string]: string
-// }
-
 export interface IGeneralRequestHeadersParams {
 	'Accept-Language': string
 	'app-version': string
