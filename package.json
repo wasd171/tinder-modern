@@ -8,15 +8,15 @@
   "author": "Konstantin Nesterov <wasd171@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@types/form-data": "^0.0.33",
+    "@types/form-data": "^2.2.0",
     "@types/node-fetch": "^1.6.7",
-    "husky": "^0.14.0",
-    "lint-staged": "^4.0.0",
-    "prettier": "^1.4.4",
+    "husky": "^0.14.3",
+    "lint-staged": "^4.0.2",
+    "prettier": "^1.5.3",
     "rimraf": "^2.6.1",
-    "tslint": "^5.4.3",
+    "tslint": "^5.5.0",
     "tslint-config-prettier": "^1.1.0",
-    "typescript": "^2.3.4"
+    "typescript": "^2.4.2"
   },
   "scripts": {
     "clean": "rimraf dist/",
