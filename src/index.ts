@@ -51,8 +51,9 @@ class TinderClient {
 		}
 	}
 
+	public lastActivity: LastActivityType
+
 	private xAuthToken: XAuthTokenType = null
-	private lastActivity: LastActivityType
 	private userId: UserIdType = null
 	private defaults: DefaultsType = null
 
