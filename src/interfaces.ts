@@ -10,15 +10,34 @@ export interface IConstructorArgs {
 	lastActivityDate?: LastActivityType
 }
 
-export interface IRequestHeadersParams {
+// export interface IRequestHeadersParams {
+// 	'Accept-Language': string
+// 	'app-version': string
+// 	'Content-Type': string
+// 	'User-Agent': string
+// 	'X-Auth-Token'?: string
+// 	os_version: string
+// 	platform: string
+// 	[key: string]: string
+// }
+
+export interface IGeneralRequestHeadersParams {
 	'Accept-Language': string
 	'app-version': string
 	'Content-Type': string
 	'User-Agent': string
-	'X-Auth-Token'?: string
 	os_version: string
 	platform: string
+	[key: string]: string
 }
+
+export interface IAuthRequestHeadersParams {
+	'X-Auth-Token': string
+}
+
+// Weird hack to work around index signature weakness
+export type IRequestHeadersParams = IGeneralRequestHeadersParams &
+	(IGeneralRequestHeadersParams | IAuthRequestHeadersParams)
 
 export interface IHTTPArgs {
 	data: any | void
