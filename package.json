@@ -1,38 +1,38 @@
 {
-  "name": "tinder-modern",
-  "version": "2.0.0",
-  "description": "Node.js bindings to Tinder API",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "repository": "https://github.com/wasd171/tinder-modern.git",
-  "author": "Konstantin Nesterov <wasd171@gmail.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/form-data": "^2.2.0",
-    "@types/node-fetch": "^1.6.7",
-    "husky": "^0.14.3",
-    "lint-staged": "^4.0.2",
-    "prettier": "^1.5.3",
-    "rimraf": "^2.6.1",
-    "tslint": "^5.5.0",
-    "tslint-config-prettier": "^1.1.0",
-    "typescript": "^2.4.2"
-  },
-  "scripts": {
-    "clean": "rimraf dist/",
-    "build": "npm run clean && tsc",
-    "precommit": "lint-staged"
-  },
-  "lint-staged": {
-    "src/*.ts": [
-      "tslint --fix",
-      "prettier --single-quote --tab-width=4 --use-tabs --no-semi --write",
-      "git add"
-    ]
-  },
-  "dependencies": {
-    "form-data": "^2.2.0",
-    "node-fetch": "^1.7.1",
-    "tslib": "^1.7.1"
-  }
+	"name": "tinder-modern",
+	"version": "2.0.1",
+	"description": "Node.js bindings to Tinder API",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"repository": "https://github.com/wasd171/tinder-modern.git",
+	"author": "Konstantin Nesterov <wasd171@gmail.com>",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/form-data": "^2.2.0",
+		"@types/node-fetch": "^1.6.7",
+		"husky": "^0.14.3",
+		"lint-staged": "^4.0.2",
+		"prettier": "^1.5.3",
+		"rimraf": "^2.6.1",
+		"tslint": "^5.5.0",
+		"tslint-config-prettier": "^1.1.0",
+		"typescript": "^2.4.2"
+	},
+	"scripts": {
+		"clean": "rimraf dist/",
+		"build": "npm run clean && tsc",
+		"precommit": "lint-staged"
+	},
+	"lint-staged": {
+		"src/*.ts": [
+			"tslint --fix",
+			"prettier --single-quote --tab-width=4 --use-tabs --no-semi --write",
+			"git add"
+		]
+	},
+	"dependencies": {
+		"form-data": "^2.2.0",
+		"node-fetch": "^1.7.1",
+		"tslib": "^1.7.1"
+	}
 }
